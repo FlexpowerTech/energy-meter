@@ -15,12 +15,14 @@ name = "energy-meter"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "flex-modbus-reader" },
     { name = "pymodbus" },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "flex-modbus-reader", specifier = ">=0.0.1" },
     { name = "pymodbus", specifier = "<=3.8.3" },
     { name = "pytest", specifier = ">=8.3.4" },
 ]
@@ -33,6 +35,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/09/35/2495c4ac46b980e4c
 wheels = [
     { url = "https://files.pythonhosted.org/packages/02/cc/b7e31358aac6ed1ef2bb790a9746ac2c69bcb3c8588b41616914eb106eaf/exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b", size = 16453 },
 ]
+
+[[package]]
+name = "flex-modbus-reader"
+version = "0.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pymodbus" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d7/8a/ef84e784c5a4c8e59bec99aba01b2bb722455a9925f950cf073ef0ba4a31/flex_modbus_reader-0.0.1.tar.gz", hash = "sha256:32e8a951058696c8ea1ab936179c55fdffb4b58e885301b82695ce99b87ed3e7", size = 6082 }
 
 [[package]]
 name = "iniconfig"
