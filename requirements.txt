@@ -2,4 +2,5 @@ iniconfig==2.0.0
 packaging==24.2
 pluggy==1.5.0
 pymodbus==3.8.3
+flex-modbus-reader>=0.0.1
 pytest==8.3.4

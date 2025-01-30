@@ -7,7 +7,7 @@ Easily connect, debug and test any energy meter!
 # Installation Guide
 
 ## Prerequisites
-- `python version 3.9` or later
+- `python` version 3.9 or later
 - `pip` or `uv`
 
 Using pip:
@@ -30,7 +30,7 @@ Using uv:
 # Create a Python virtual environment
 uv venv
 
-# Install dependencies 
+# Install dependencies
 uv sync
 
 # Then you can run an example reader using following command:
@@ -48,7 +48,7 @@ In `main.py` you can find an example implementation of polling service that read
 ```python3
 # main.py
 
-from energymeter.examples.example_meter import ExampleMeter  # replace with your custom device class
+from flexmodbusreader.examples.example_meter import ExampleMeter  # replace with your custom device class
 
 # Initialize and start the Modbus device
 service = ModbusDeviceService(
@@ -56,12 +56,34 @@ service = ModbusDeviceService(
     port=args.port,
     timeout=args.timeout,
     interval=args.interval,
-    byteorder=Endian[args.byteorder],
-    wordorder=Endian[args.wordorder],
+    byteorder=Endian.BIG,
+    wordorder=Endian.BIG,
     device=ExampleMeter,
 )
 service.start_polling()
 ```
+
+Script arguments:
+```shell
+python main.py --help
+usage: main.py [-h] --host HOST --port PORT [--timeout TIMEOUT] [--interval INTERVAL] [--byteorder {AUTO,BIG,LITTLE}] [--wordorder {AUTO,BIG,LITTLE}] [--message_size MESSAGE_SIZE]
+
+Energy meter Modbus reader
+
+options:
+  -h, --help            show this help message and exit
+  --host HOST           IP address of the Modbus device
+  --port PORT           Port number of the Modbus device
+  --timeout TIMEOUT     Timeout for the Modbus connection (default: 1 second)
+  --interval INTERVAL   Polling interval in seconds (default: 10 seconds)
+  --byteorder {AUTO,BIG,LITTLE}
+                        Byte endianess. Default value is 'BIG'.
+  --wordorder {AUTO,BIG,LITTLE}
+                        Word endianess. Default value is 'BIG'.
+  --message_size MESSAGE_SIZE
+                        Maximum size of register to read per one request
+```
+
 
 ## Writing your own ModbusDevice class:
 
@@ -72,38 +94,36 @@ service.start_polling()
 
 ```python3
 from pymodbus.constants import Endian
+from pymodbus.client.tcp import ModbusTcpClient
 
-from energymeter.device import ModbusDevice
-from energymeter.reader import ModbusDeviceDataReader
+from flexmodbusreader.device import ModbusDevice
+from flexmodbusreader.reader import ModbusDeviceDataReader
 
 
-device = ModbusDevice(
+MyDevice = ModbusDevice(
     model="Energy Meter",
     registers_map=[
-        Register("value_1", 3000, 2, ModbusTcpClient.DATATYPE.FLOAT32),
-        Register("value_2", 3002, 2, ModbusTcpClient.DATATYPE.FLOAT32),
-        Register("value_3", 3004, 2, ModbusTcpClient.DATATYPE.FLOAT32),
-        Register("value_4", 3200, 2, ModbusTcpClient.DATATYPE.FLOAT32),
-        Register("value_5", 3202, 2, ModbusTcpClient.DATATYPE.INT32),
-        Register("value_6", 3204, 2, ModbusTcpClient.DATATYPE.FLOAT32),
-        Register("value_7", 3250, 2, ModbusTcpClient.DATATYPE.UINT64),
-        Register("value_8", 3252, 2, ModbusTcpClient.DATATYPE.FLOAT32),
-        Register("value_9", 3340, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      Register("current_phase_a", 3000, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      Register("current_phase_b", 3002, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      Register("current_phase_c", 3004, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      Register("voltage_phase_a", 3028, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      Register("voltage_phase_b", 3030, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      Register("voltage_phase_c", 3032, 2, ModbusTcpClient.DATATYPE.FLOAT32),
+      ...
     ],
     unit=10,
 )
 
-client = ModbusTcpClient("192.168.0.1", port=5030, timeout=1)
-reader = ModbusDeviceDataReader(
-    client=client,
+service = ModbusDeviceService(
+    host=args.host,
+    port=args.port,
+    timeout=args.timeout,
+    interval=args.interval,
     byteorder=Endian.BIG,
     wordorder=Endian.BIG,
-    message_size=100,
-    device=device,
+    device=MyDevice,
 )
-
-data = reader.read_registers() # returns a dict with decoded values 
-
+service.start_polling()
 ```
 
 ## Tests
