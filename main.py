@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    from flexmodbusreader.examples.example_meter import ExampleMeter
+    from energymeter.devices.example_meter import ExampleMeter  # replace with your ModbusDevice class
 
     # Initialize and start the Modbus device
     service = ModbusDeviceService(
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         port=args.port,
         timeout=args.timeout,
         interval=args.interval,
-        device=ExampleMeter,
+        device=ExampleMeter,  # replace with your ModbusDevice class
         byteorder=Endian[args.byteorder],
         wordorder=Endian[args.wordorder],
         message_size=args.message_size,
