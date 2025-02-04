@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "pymodbus<=3.8.3",
-    "flex-modbus-reader>=0.0.1",
+    "flex-modbus-reader>=0.0.2",
     "pytest>=8.3.4",
 ]
 [tool.black]
